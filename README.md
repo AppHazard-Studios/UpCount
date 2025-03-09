@@ -1,16 +1,21 @@
-# countup
+# UpCount: Countdown with Friends
 
-A new Flutter project.
+## Overview
+UpCount is a game designed for **playing Countdown with friends** or practicing solo. It features an easy-to-read display, making it perfect for group play around a table, and includes the classic Countdown timer sound for an authentic experience.
 
-## Getting Started
+## Features
+- **Designed for Group Play** – Large, clear display so everyone can see the letters and numbers easily.
+- **Solo Mode** – Practice on your own and sharpen your skills.
+- **Letters Round** – Pick vowels and consonants to form the longest word.
+- **Numbers Round** – Use arithmetic to reach the target number.
+- **Conundrum Round** – Solve the anagram before time runs out.
+- **Authentic Countdown Timer Sound** – Features the classic 30-second Countdown music.
 
-This project is a starting point for a Flutter application.
+## Why "UpCount"?
+The name **UpCount** is a fun twist on "Countdown." If someone asks, "What's UpCount?" you can reply, "It's Countdown!"
 
-A few resources to get you started if this is your first Flutter project:
+## Need Help?
+For any questions or feedback, email us at **apphazardstudios@gmail.com**.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+Enjoy playing **UpCount**!
