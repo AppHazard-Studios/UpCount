@@ -2,26 +2,15 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:vibration/vibration.dart';
+import 'package:vibration/vibration.dart';
 
-// 1) Import audioplayers
+//import 'package:wakelock/wakelock.dart';
 import 'package:audioplayers/audioplayers.dart';
-
-void playClick() {
-  AudioPlayer player = AudioPlayer();
-  player.play(AssetSource('sounds/click.mp3'));
-}
-
-Future<void> preloadClickSound() async {
-  AudioPlayer preloadPlayer = AudioPlayer();
-  // Load the sound by setting its source
-  await preloadPlayer.setSource(AssetSource('sounds/click.mp3'));
-  preloadPlayer.dispose();
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  preloadClickSound();
+  //Wakelock.enable();
+  await preloadClickSound();
   // Force landscape orientation
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
@@ -31,7 +20,22 @@ void main() async {
   });
 }
 
+final AudioPlayer _clickPlayer = AudioPlayer();
+
+void playClick() {
+  _clickPlayer.play(AssetSource('sounds/click.mp3'));
+}
+
+Future<void> preloadClickSound() async {
+  AudioPlayer preloadPlayer = AudioPlayer();
+  // Load the sound by setting its source
+  await preloadPlayer.setSource(AssetSource('sounds/click.mp3'));
+  preloadPlayer.dispose();
+}
+
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,18 +46,45 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class ClickSoundPlayer {
+  final List<AudioPlayer> _players = [];
+  int _currentIndex = 0;
+
+  ClickSoundPlayer({int poolSize = 9}) {
+    // Create a pool of AudioPlayers
+    for (int i = 0; i < poolSize; i++) {
+      _players.add(AudioPlayer());
+    }
+  }
+
+  Future<void> play() async {
+    final player = _players[_currentIndex];
+    _currentIndex = (_currentIndex + 1) % _players.length;
+    await player.play(AssetSource('sounds/click.mp3'));
+  }
+
+  void dispose() {
+    for (final player in _players) {
+      player.dispose();
+    }
+  }
+}
+
 // -----------------------------------------------------------------------------
 //  HOME SCREEN
 // -----------------------------------------------------------------------------
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   // 7 squares, initially show U P C O U N T
   List<String> homeSquares = 'UPCOUNT'.split('');
   bool animating = false;
+  final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
 
   // AudioPlayer for clicks when animating squares
   //playClick();
@@ -83,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // 2) Play click sound (stop any previous click if overlapping)
 
-      playClick();
+      clickSoundPlayer.play();
 
       // 3) Optionally add haptic feedback here for each letter:
       // HapticFeedback.mediumImpact();
@@ -190,8 +221,10 @@ class _HomeScreenState extends State<HomeScreen> {
 //  LETTERS ROUND
 // -----------------------------------------------------------------------------
 class LettersRoundPage extends StatefulWidget {
+  const LettersRoundPage({super.key});
+
   @override
-  _LettersRoundPageState createState() => _LettersRoundPageState();
+  State<LettersRoundPage> createState() => _LettersRoundPageState();
 }
 
 class _LettersRoundPageState extends State<LettersRoundPage>
@@ -225,6 +258,7 @@ class _LettersRoundPageState extends State<LettersRoundPage>
   List<String> selectedLetters = [];
 
   late AnimationController _controller;
+
   bool get isRunning => _controller.isAnimating;
 
   // End-of-timer flash
@@ -250,12 +284,8 @@ class _LettersRoundPageState extends State<LettersRoundPage>
       duration: Duration(seconds: 30),
     )..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        //stopVibrationPattern();
+        Vibration.vibrate(pattern: [0, 300, 300, 300]); // Vibrate for 3 seconds
         _startFlashing();
-        // Stop the timer sound
-        Future.delayed(Duration(seconds: 4), () {
-          _timerPlayer.stop();
-        });
       }
     });
   }
@@ -341,6 +371,7 @@ class _LettersRoundPageState extends State<LettersRoundPage>
   }
 
   // Letters logic
+  final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
 
   void addLetter(String type) {
     if (selectedLetters.length >= 9) return;
@@ -381,7 +412,7 @@ class _LettersRoundPageState extends State<LettersRoundPage>
       selectedLetters.add(newLetter);
     });
 
-    playClick();
+    clickSoundPlayer.play();
   }
 
   void startTimer() {
@@ -497,8 +528,10 @@ class _LettersRoundPageState extends State<LettersRoundPage>
 //  NUMBERS ROUND
 // -----------------------------------------------------------------------------
 class NumbersRoundPage extends StatefulWidget {
+  const NumbersRoundPage({super.key});
+
   @override
-  _NumbersRoundPageState createState() => _NumbersRoundPageState();
+  State<NumbersRoundPage> createState() => _NumbersRoundPageState();
 }
 
 class _NumbersRoundPageState extends State<NumbersRoundPage>
@@ -509,6 +542,7 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
   int? target;
 
   late AnimationController _controller;
+
   bool get isRunning => _controller.isAnimating;
 
   bool flashOn = false;
@@ -531,9 +565,7 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
       duration: Duration(seconds: 30),
     )..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        //stopVibrationPattern();
-        // stop the timer sound
-        _timerPlayer.stop();
+        Vibration.vibrate(pattern: [0, 300, 300, 300]); // Vibrate for 3 seconds
         _startFlashing();
       }
     });
@@ -577,8 +609,9 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
         generateTarget();
       }
     });
+    final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
 
-    playClick();
+    clickSoundPlayer.play();
   }
 
   void generateTarget() {
@@ -586,8 +619,11 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
       target = 100 + random.nextInt(900);
     });
     // Could also play a click if you want
+    _controller.reset();
+    _timerPlayer.stop();
+    final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
 
-    playClick();
+    clickSoundPlayer.play();
   }
 
   // 3) Start the 30s timer sound
@@ -712,19 +748,23 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
 //  CONUNDRUM ROUND
 // -----------------------------------------------------------------------------
 class ConundrumRoundPage extends StatefulWidget {
+  const ConundrumRoundPage({super.key});
+
   @override
-  _ConundrumRoundPageState createState() => _ConundrumRoundPageState();
+  State<ConundrumRoundPage> createState() => _ConundrumRoundPageState();
 }
 
 class _ConundrumRoundPageState extends State<ConundrumRoundPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+
   bool get isRunning => _controller.isAnimating;
 
   bool flashOn = false;
   Timer? flashTimer;
   int flashCount = 0;
   bool showProgress = true;
+  bool _anagramSolved = false;
 
   final Random random = Random();
   final List<String> nineLetterWords = [
@@ -845,8 +885,7 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
       duration: Duration(seconds: 30),
     )..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        // stop the timer sound
-        _timerPlayer.stop();
+        Vibration.vibrate(pattern: [0, 300, 300, 300]); // Vibrate for 3 seconds
         _startFlashing();
       }
     });
@@ -905,6 +944,7 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
     for (int i = 0; i < newLetters.length; i++) {
       setState(() {
         displayedLetters[i] = newLetters[i];
+        _anagramSolved = true;
       });
       playClick(); // Plays the click sound for each tile change
       await Future.delayed(Duration(milliseconds: 150));
@@ -930,13 +970,13 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             OutlinedButton(
-              onPressed: isRunning ? null : startTimer,
+              onPressed: (isRunning || _anagramSolved) ? null : startTimer,
               style: _outlinedStyle(),
               child: Text('Start Timer', style: TextStyle(fontSize: 24)),
             ),
             SizedBox(width: 20),
             OutlinedButton(
-              onPressed: solveAnagram,
+              onPressed: _anagramSolved ? () {} : solveAnagram,
               style: _outlinedStyle(),
               child: Text('Solve Anagram', style: TextStyle(fontSize: 24)),
             ),
@@ -1001,7 +1041,8 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
 class FixedSelectionBoard extends StatelessWidget {
   final int totalBoxes;
   final List<String> items;
-  FixedSelectionBoard({required this.totalBoxes, required this.items});
+
+  const FixedSelectionBoard({super.key, required this.totalBoxes, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -1037,23 +1078,24 @@ class FixedSelectionBoard extends StatelessWidget {
 // -----------------------------------------------------------------------------
 ButtonStyle _outlinedStyle() {
   return ButtonStyle(
-    side: MaterialStateProperty.all(
+    side: WidgetStateProperty.all(
       BorderSide(color: Colors.black, width: 2.5),
     ),
-    animationDuration: Duration.zero, // instant press/release
-    foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-      if (states.contains(MaterialState.pressed)) {
+    animationDuration: Duration.zero,
+    // instant press/release
+    foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+      if (states.contains(WidgetState.pressed)) {
         return Colors.white; // pressed = white text
       }
       return Colors.black; // default = black text
     }),
-    backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-      if (states.contains(MaterialState.pressed)) {
+    backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+      if (states.contains(WidgetState.pressed)) {
         return Colors.black; // pressed = black background
       }
       return Colors.transparent; // default = transparent
     }),
-    overlayColor: MaterialStateProperty.all(Colors.transparent),
-    elevation: MaterialStateProperty.all(0),
+    overlayColor: WidgetStateProperty.all(Colors.transparent),
+    elevation: WidgetStateProperty.all(0),
   );
 }
