@@ -93,6 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Mark the layout as ready after the first frame
+    });
     //_clickCache.load('click.mp3');
     // Always reset to 'UPCOUNT' each time we arrive
     homeSquares = 'UPCOUNT'.split('');
@@ -1042,7 +1045,11 @@ class FixedSelectionBoard extends StatelessWidget {
   final int totalBoxes;
   final List<String> items;
 
-  const FixedSelectionBoard({super.key, required this.totalBoxes, required this.items});
+  const FixedSelectionBoard({
+    super.key,
+    required this.totalBoxes,
+    required this.items,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1078,9 +1085,7 @@ class FixedSelectionBoard extends StatelessWidget {
 // -----------------------------------------------------------------------------
 ButtonStyle _outlinedStyle() {
   return ButtonStyle(
-    side: WidgetStateProperty.all(
-      BorderSide(color: Colors.black, width: 2.5),
-    ),
+    side: WidgetStateProperty.all(BorderSide(color: Colors.black, width: 2.5)),
     animationDuration: Duration.zero,
     // instant press/release
     foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
