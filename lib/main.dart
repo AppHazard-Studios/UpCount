@@ -947,23 +947,22 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
   }
 
   Future<void> _pickAndScrambleWord() async {
-    // If the list is empty, repopulate it with all words.
     if (_unusedConundrumWords.isEmpty) {
       _unusedConundrumWords = List.from(nineLetterWords);
     }
-    // Pick a random word from the unused list.
     int index = random.nextInt(_unusedConundrumWords.length);
-    originalConundrumWord = _unusedConundrumWords[index];
+    String selectedWord = _unusedConundrumWords[index];
 
-    // Remove the selected word so it won't be used again.
     _unusedConundrumWords.removeAt(index);
 
-    // Save the updated list to SharedPreferences.
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('unused_conundrum_words', _unusedConundrumWords);
 
-    // Prepare the displayed letters.
-    displayedLetters = originalConundrumWord.split('')..shuffle();
+    // Wrap the update in setState so the UI refreshes.
+    setState(() {
+      originalConundrumWord = selectedWord;
+      displayedLetters = originalConundrumWord.split('')..shuffle();
+    });
   }
 
   void _startFlashing() {
