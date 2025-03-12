@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vibration/vibration.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:vibration/vibration.dart';
 
 //import 'package:wakelock/wakelock.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -10,7 +11,6 @@ import 'package:audioplayers/audioplayers.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Wakelock.enable();
-  await preloadClickSound();
   // Force landscape orientation
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
@@ -20,18 +20,13 @@ void main() async {
   });
 }
 
-final AudioPlayer _clickPlayer = AudioPlayer();
+//final AudioPlayer _clickPlayer = AudioPlayer();
+final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
+final GlobalKey<AnimatedBackButtonState> _backButtonKey = GlobalKey<AnimatedBackButtonState>();
 
-void playClick() {
-  _clickPlayer.play(AssetSource('sounds/click.mp3'));
-}
-
-Future<void> preloadClickSound() async {
-  AudioPlayer preloadPlayer = AudioPlayer();
-  // Load the sound by setting its source
-  await preloadPlayer.setSource(AssetSource('sounds/click.mp3'));
-  preloadPlayer.dispose();
-}
+//void playClick() {
+//_clickPlayer.play(AssetSource('sounds/click.mp3'));
+//}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -51,10 +46,17 @@ class ClickSoundPlayer {
   int _currentIndex = 0;
 
   ClickSoundPlayer({int poolSize = 9}) {
-    // Create a pool of AudioPlayers
+    // Create a pool of AudioPlayers and preload the click sound on each.
     for (int i = 0; i < poolSize; i++) {
-      _players.add(AudioPlayer());
+      AudioPlayer player = AudioPlayer();
+      _players.add(player);
     }
+    // Preload the click sound for all players asynchronously.
+    Future.wait(
+      _players.map(
+        (player) => player.setSource(AssetSource('sounds/click.mp3')),
+      ),
+    );
   }
 
   Future<void> play() async {
@@ -80,11 +82,14 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   // 7 squares, initially show U P C O U N T
   List<String> homeSquares = 'UPCOUNT'.split('');
   bool animating = false;
   final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
+  late AnimationController _footerController;
+  late Animation<double> _footerAnimation;
+
 
   // AudioPlayer for clicks when animating squares
   //playClick();
@@ -99,6 +104,22 @@ class _HomeScreenState extends State<HomeScreen> {
     //_clickCache.load('click.mp3');
     // Always reset to 'UPCOUNT' each time we arrive
     homeSquares = 'UPCOUNT'.split('');
+    _footerController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+    _footerAnimation = Tween<double>(begin: 0.0, end: 1).animate(
+      CurvedAnimation(parent: _footerController, curve: Curves.easeInOut),
+    );
+    // Repeat the animation indefinitely (fade in, then fade out)
+    _footerController.repeat(reverse: true);
+
+  }
+
+  @override
+  void dispose() {
+    _footerController.dispose();
+    super.dispose();
   }
 
   /// Animate from current letters to [word], then run [onComplete].
@@ -209,11 +230,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
+
                   ],
                 ),
               ],
             ),
           ),
+    Positioned(
+    bottom: 16,
+    left: 0,
+    right: 0,
+    child: Center(
+    child: FadeTransition(
+    opacity: _footerAnimation,
+              child: Text(
+                'Created by AppHazard Studios',
+                style: TextStyle(fontSize: 15, color: Colors.black),
+              ),
+            ),
+          ),
+    ),
         ],
       ),
     );
@@ -287,8 +323,11 @@ class _LettersRoundPageState extends State<LettersRoundPage>
       duration: Duration(seconds: 30),
     )..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Vibration.vibrate(pattern: [0, 300, 300, 300]); // Vibrate for 3 seconds
+        //Vibration.vibrate(pattern: [0, 150, 100, 150]);
         _startFlashing();
+        Future.delayed(Duration(seconds: 12), () {
+          _backButtonKey.currentState?.startContinuousPulse(Duration(seconds: 60));
+        });
       }
     });
   }
@@ -350,13 +389,6 @@ class _LettersRoundPageState extends State<LettersRoundPage>
     consonantBag.shuffle(random);
   }
 
-  Widget _buildBackArrow(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back_ios_new, size: 34, color: Colors.black),
-      onPressed: () => Navigator.pop(context),
-    );
-  }
-
   void _startFlashing() {
     flashCount = 0;
     flashTimer?.cancel();
@@ -374,7 +406,7 @@ class _LettersRoundPageState extends State<LettersRoundPage>
   }
 
   // Letters logic
-  final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
+  //final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
 
   void addLetter(String type) {
     if (selectedLetters.length >= 9) return;
@@ -495,7 +527,11 @@ class _LettersRoundPageState extends State<LettersRoundPage>
       appBar: AppBar(
         title: null,
         automaticallyImplyLeading: false,
-        leading: _buildBackArrow(context),
+        leading: AnimatedBackButton(
+          key: _backButtonKey,
+          //continuous: true,
+          //continuousDuration: Duration(seconds: 15),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -568,20 +604,17 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
       duration: Duration(seconds: 30),
     )..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Vibration.vibrate(pattern: [0, 300, 300, 300]); // Vibrate for 3 seconds
+        //Vibration.vibrate(pattern: [0, 300, 300, 300]); // Vibrate for 3 seconds
         _startFlashing();
+        Future.delayed(Duration(seconds: 12), () {
+          _backButtonKey.currentState?.startContinuousPulse(Duration(seconds: 60));
+        });
       }
     });
 
     // Timer can be normal
   }
 
-  Widget _buildBackArrow(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back_ios_new, size: 34, color: Colors.black),
-      onPressed: () => Navigator.pop(context),
-    );
-  }
 
   void _startFlashing() {
     flashCount = 0;
@@ -612,7 +645,6 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
         generateTarget();
       }
     });
-    final ClickSoundPlayer clickSoundPlayer = ClickSoundPlayer(poolSize: 9);
 
     clickSoundPlayer.play();
   }
@@ -680,7 +712,7 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
             OutlinedButton(
               onPressed: (selectedNumbers.length == 6) ? generateTarget : null,
               style: _outlinedStyle(),
-              child: Text('Generate Target', style: TextStyle(fontSize: 24)),
+              child: Text('Regenerate Target', style: TextStyle(fontSize: 24)),
             ),
             SizedBox(width: 20),
             OutlinedButton(
@@ -715,7 +747,11 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
       appBar: AppBar(
         title: null,
         automaticallyImplyLeading: false,
-        leading: _buildBackArrow(context),
+        leading: AnimatedBackButton(
+          key: _backButtonKey,
+          //continuous: true,
+          //continuousDuration: Duration(seconds: 15),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -770,6 +806,8 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
   bool _anagramSolved = false;
 
   final Random random = Random();
+  List<String> _unusedConundrumWords = [];
+
   final List<String> nineLetterWords = [
     // ... your conundrum words ...
     'ADVANCING',
@@ -881,31 +919,50 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
   @override
   void initState() {
     super.initState();
-    _pickAndScrambleWord();
+    _loadUnusedConundrumWords().then((_) {
+      _pickAndScrambleWord();
+    });
 
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 30),
     )..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Vibration.vibrate(pattern: [0, 300, 300, 300]); // Vibrate for 3 seconds
         _startFlashing();
+        Future.delayed(Duration(seconds: 12), () {
+          _backButtonKey.currentState?.startContinuousPulse(Duration(seconds: 60));
+        });
       }
     });
-
-    // Timer can be normal
   }
 
-  Widget _buildBackArrow(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back_ios_new, size: 34, color: Colors.black),
-      onPressed: () => Navigator.pop(context),
-    );
+
+  Future<void> _loadUnusedConundrumWords() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? storedWords = prefs.getStringList('unused_conundrum_words');
+    if (storedWords == null || storedWords.isEmpty) {
+      storedWords = List.from(nineLetterWords);
+    }
+    _unusedConundrumWords = storedWords;
   }
 
-  void _pickAndScrambleWord() {
-    originalConundrumWord =
-        nineLetterWords[random.nextInt(nineLetterWords.length)];
+  Future<void> _pickAndScrambleWord() async {
+    // If the list is empty, repopulate it with all words.
+    if (_unusedConundrumWords.isEmpty) {
+      _unusedConundrumWords = List.from(nineLetterWords);
+    }
+    // Pick a random word from the unused list.
+    int index = random.nextInt(_unusedConundrumWords.length);
+    originalConundrumWord = _unusedConundrumWords[index];
+
+    // Remove the selected word so it won't be used again.
+    _unusedConundrumWords.removeAt(index);
+
+    // Save the updated list to SharedPreferences.
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('unused_conundrum_words', _unusedConundrumWords);
+
+    // Prepare the displayed letters.
     displayedLetters = originalConundrumWord.split('')..shuffle();
   }
 
@@ -949,7 +1006,7 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
         displayedLetters[i] = newLetters[i];
         _anagramSolved = true;
       });
-      playClick(); // Plays the click sound for each tile change
+      clickSoundPlayer.play(); // Plays the click sound for each tile change
       await Future.delayed(Duration(milliseconds: 150));
     }
   }
@@ -1006,7 +1063,11 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
       appBar: AppBar(
         title: null,
         automaticallyImplyLeading: false,
-        leading: _buildBackArrow(context),
+        leading: AnimatedBackButton(
+          key: _backButtonKey,
+          //continuous: true,
+          //continuousDuration: Duration(seconds: 15),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -1069,7 +1130,7 @@ class FixedSelectionBoard extends StatelessWidget {
           child: Text(
             text,
             style: TextStyle(
-              fontSize: 36,
+              fontSize: 40,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -1103,4 +1164,69 @@ ButtonStyle _outlinedStyle() {
     overlayColor: WidgetStateProperty.all(Colors.transparent),
     elevation: WidgetStateProperty.all(0),
   );
+}
+
+// AnimatedBackButton widget
+class AnimatedBackButton extends StatefulWidget {
+  const AnimatedBackButton({Key? key}) : super(key: key);
+
+  @override
+  AnimatedBackButtonState createState() => AnimatedBackButtonState();
+}
+
+class AnimatedBackButtonState extends State<AnimatedBackButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set up a pulse cycle (800ms for up-and-down)
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1000),
+    );
+    // Tween from normal scale to a larger scale (adjust as needed)
+    _animation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    // Initially, do not start any animation.
+  }
+
+  /// Starts a continuous pulse for the specified duration.
+  void startContinuousPulse(Duration duration) {
+    _controller.repeat(reverse: true);
+    Future.delayed(duration, () {
+      if (mounted) {
+        _controller.stop();
+      }
+    });
+  }
+
+  /// For a one-off pulse if needed.
+  void pulse() {
+    _controller.forward().then((_) => _controller.reverse());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _animation,
+      child: IconButton(
+        icon: Icon(Icons.arrow_back_ios_new, size: 34, color: Colors.black),
+        onPressed: () {
+          // Stop the animation when the button is pressed
+          _controller.stop();
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }
