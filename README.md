@@ -17,13 +17,13 @@
 
 ## Download  
 
-<a href="">
+<a href="https://github.com/AppHazard-Studios/UpCount">
     <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/assets/googleplay.png?raw=true"
     alt="Get it on Google Play"
     height="70">
 </a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="">
+<a href="https://github.com/AppHazard-Studios/UpCount">
     <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/assets/get-it-on.png?raw=true"
     alt="Get it on F-Droid"
     height="70">
