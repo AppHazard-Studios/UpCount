@@ -5,15 +5,15 @@
 <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum2.jpg?raw=true" width="400" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum%20solved.jpg?raw=true" width="400" />
 
 ## Overview  
-UpCount is a game designed for **playing Countdown with friends** or practicing solo. It features an easy-to-read display, making it perfect for group play around a table, and includes the classic Countdown timer sound for an authentic experience.
+**Upcount** is designed for playing **Countdown** with friends or practicing solo. Featuring an **easy-to-read display** and **authentic Countdown-style timer sounds**, it brings the classic game to your device. Whether you're gathered around a table or playing on the go, **Upcount scales beautifully across different screen sizes**, ensuring the best possible experience.  
 
 ## Features  
-- **Designed for Group Play** – Large, clear display so everyone can see the letters and numbers easily.  
-- **Solo Mode** – Practice on your own and sharpen your skills.  
-- **Letters Round** – Pick vowels and consonants to form the longest word.  
-- **Numbers Round** – Use arithmetic to reach the target number.  
-- **Conundrum Round** – Solve the anagram before time runs out.  
-- **Authentic Countdown Timer Sound** – Features the classic 30-second Countdown music.  
+- **Classic Rounds** – Play **Letters, Numbers, and Conundrum** rounds just like in the real game.  
+- **Realistic Letter Selection** – Not just random vowels and consonants—our system mimics the actual frequency distribution used in Countdown.  
+- **Massive Conundrum Bank** – Over **28,000** possible conundrum words for a fresh challenge every time.  
+- **Authentic Countdown Timer Sound** – Includes the iconic countdown clock tick for added intensity.  
+- **Easy-to-Read Display** – Optimized for **tabletop play**, so everyone can see the game at a glance.  
+- **Tactile Feedback** – Responsive sounds and visuals for an engaging experience.  
 
 ## Download  
 
@@ -24,8 +24,9 @@ UpCount is a game designed for **playing Countdown with friends** or practicing 
 _(Links will be active once the app is published.)_  
 
 ## Why "UpCount"?  
-The name **UpCount** is a fun twist on "Countdown." If someone asks, "What's UpCount?" you can reply, "It's Countdown!"  
+The name **Upcount** is a fun twist on **Countdown**. If someone asks, *"What's Upcount?"*, you can reply:  
 
+> *"It's Countdown"—better if done with your worst Dracula accent.*  
 ## Need Help?  
 For any questions or feedback, email us at **apphazardstudios@gmail.com**.  
 
