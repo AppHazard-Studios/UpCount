@@ -34,13 +34,13 @@ class SizeConfig {
   static double getDeviceMultiplier(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     if (height >= 712) {
-      return 0.9;
+      return 0.93;
     } else if (height >= 512) {
-      return 0.95; //tablets and tvs
+      return 0.98; //tablets and tvs
     } else if (height >= 412) {
-      return 1.1; // normal phones
+      return 1.13; // normal phones
     } else {
-      return 1.00; // smaller phones
+      return 1.03; // smaller phones
     }
   }
 
@@ -196,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen>
                 Text(
                   'Select Round:',
                   style: TextStyle(
-                    fontSize: SizeConfig.getUniformSize(32),
+                    fontSize: SizeConfig.getUniformSize(38),
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -213,10 +213,10 @@ class _HomeScreenState extends State<HomeScreen>
                           _goToRound('LETTERS', LettersRoundPage()),
                       style: _outlinedStyle(),
                       child: Text(
-                        'Letters Round',
+                        'Letters',
                         style: TextStyle(
                             fontSize:
-                            SizeConfig.getUniformSize(24)),
+                            SizeConfig.getUniformSize(30)),
                       ),
                     ),
                     SizedBox(width: SizeConfig.getUniformSize(20)),
@@ -225,10 +225,10 @@ class _HomeScreenState extends State<HomeScreen>
                           _goToRound('NUMBERS', NumbersRoundPage()),
                       style: _outlinedStyle(),
                       child: Text(
-                        'Numbers Round',
+                        'Numbers',
                         style: TextStyle(
                             fontSize:
-                            SizeConfig.getUniformSize(24)),
+                            SizeConfig.getUniformSize(30)),
                       ),
                     ),
                     SizedBox(width: SizeConfig.getUniformSize(20)),
@@ -237,10 +237,10 @@ class _HomeScreenState extends State<HomeScreen>
                           _goToRound('CONDRUM', ConundrumRoundPage()),
                       style: _outlinedStyle(),
                       child: Text(
-                        'Conundrum Round',
+                        'Conundrum',
                         style: TextStyle(
                             fontSize:
-                            SizeConfig.getUniformSize(24)),
+                            SizeConfig.getUniformSize(30)),
                       ),
                     ),
                   ],
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen>
                 child: Text(
                   'Created by AppHazard Studios',
                   style: TextStyle(
-                    fontSize: SizeConfig.getUniformSize(15),
+                    fontSize: SizeConfig.getUniformSize(18),
                     color: Colors.black,
                   ),
                 ),
@@ -414,7 +414,7 @@ class _LettersRoundPageState extends State<LettersRoundPage>
         Text(
           'Select Letters:',
           style: TextStyle(
-            fontSize: SizeConfig.getUniformSize(32),
+            fontSize: SizeConfig.getUniformSize(38),
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -431,7 +431,7 @@ class _LettersRoundPageState extends State<LettersRoundPage>
               child: Text('Vowel',
                   style: TextStyle(
                       fontSize:
-                      SizeConfig.getUniformSize(24))),
+                      SizeConfig.getUniformSize(30))),
             ),
             SizedBox(width: SizeConfig.getUniformSize(20)),
             OutlinedButton(
@@ -440,7 +440,7 @@ class _LettersRoundPageState extends State<LettersRoundPage>
               child: Text('Consonant',
                   style: TextStyle(
                       fontSize:
-                      SizeConfig.getUniformSize(24))),
+                      SizeConfig.getUniformSize(30))),
             ),
             SizedBox(width: SizeConfig.getUniformSize(20)),
             OutlinedButton(
@@ -449,7 +449,7 @@ class _LettersRoundPageState extends State<LettersRoundPage>
               child: Text('Start Timer',
                   style: TextStyle(
                       fontSize:
-                      SizeConfig.getUniformSize(24))),
+                      SizeConfig.getUniformSize(30))),
             ),
           ],
         ),
@@ -615,7 +615,7 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
         Text(
           'Number Target: ${target ?? "--"}',
           style: TextStyle(
-            fontSize: SizeConfig.getUniformSize(32),
+            fontSize: SizeConfig.getUniformSize(38),
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -635,7 +635,7 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
               child: Text('Small',
                   style: TextStyle(
                       fontSize:
-                      SizeConfig.getUniformSize(24))),
+                      SizeConfig.getUniformSize(30))),
             ),
             SizedBox(width: SizeConfig.getUniformSize(20)),
             OutlinedButton(
@@ -644,16 +644,16 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
               child: Text('Large',
                   style: TextStyle(
                       fontSize:
-                      SizeConfig.getUniformSize(24))),
+                      SizeConfig.getUniformSize(30))),
             ),
             SizedBox(width: SizeConfig.getUniformSize(20)),
             OutlinedButton(
               onPressed: (selectedNumbers.length == 6) ? generateTarget : null,
               style: _outlinedStyle(),
-              child: Text('Regenerate Target',
+              child: Text('New Target',
                   style: TextStyle(
                       fontSize:
-                      SizeConfig.getUniformSize(24))),
+                      SizeConfig.getUniformSize(30))),
             ),
             SizedBox(width: SizeConfig.getUniformSize(20)),
             OutlinedButton(
@@ -664,7 +664,7 @@ class _NumbersRoundPageState extends State<NumbersRoundPage>
               child: Text('Start Timer',
                   style: TextStyle(
                       fontSize:
-                      SizeConfig.getUniformSize(24))),
+                      SizeConfig.getUniformSize(30))),
             ),
           ],
         ),
@@ -29029,16 +29029,6 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
     });
   }
 
-  void startTimer() {
-    if (isRunning) return;
-    flashTimer?.cancel();
-    flashOn = false;
-    showProgress = true;
-    _timerPlayer.play(AssetSource('sounds/timer.mp3'));
-    _controller.reset();
-    _controller.forward();
-  }
-
   Future<void> solveAnagram() async {
     _controller.reset();
     List<String> newLetters = originalConundrumWord.split('');
@@ -29052,6 +29042,16 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
     }
   }
 
+  void startTimer() {
+    if (isRunning) return;
+    flashTimer?.cancel();
+    flashOn = false;
+    showProgress = true;
+    _timerPlayer.play(AssetSource('sounds/timer.mp3'));
+    _controller.reset();
+    _controller.forward();
+  }
+
   Widget _buildConundrumContent() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -29059,7 +29059,7 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
         Text(
           'Solve the Anagram:',
           style: TextStyle(
-            fontSize: SizeConfig.getUniformSize(32),
+            fontSize: SizeConfig.getUniformSize(38),
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -29071,21 +29071,21 @@ class _ConundrumRoundPageState extends State<ConundrumRoundPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             OutlinedButton(
-              onPressed: (isRunning || _anagramSolved) ? null : startTimer,
-              style: _outlinedStyle(),
-              child: Text('Start Timer',
-                  style: TextStyle(
-                      fontSize:
-                      SizeConfig.getUniformSize(24))),
-            ),
-            SizedBox(width: SizeConfig.getUniformSize(20)),
-            OutlinedButton(
               onPressed: _anagramSolved ? () {} : solveAnagram,
               style: _outlinedStyle(),
               child: Text('Solve Anagram',
                   style: TextStyle(
                       fontSize:
-                      SizeConfig.getUniformSize(24))),
+                      SizeConfig.getUniformSize(30))),
+            ),
+            SizedBox(width: SizeConfig.getUniformSize(20)),
+            OutlinedButton(
+              onPressed: (isRunning || _anagramSolved) ? null : startTimer,
+              style: _outlinedStyle(),
+              child: Text('Start Timer',
+                  style: TextStyle(
+                      fontSize:
+                      SizeConfig.getUniformSize(30))),
             ),
           ],
         ),
@@ -29159,13 +29159,13 @@ class FixedSelectionBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: SizeConfig.getUniformSize(10),
-      runSpacing: SizeConfig.getUniformSize(10),
+      spacing: SizeConfig.getUniformSize(4),
+      runSpacing: SizeConfig.getUniformSize(4),
       children: List.generate(totalBoxes, (index) {
         String text = index < items.length ? items[index] : '';
         return Container(
-          width: SizeConfig.getUniformSize(80),
-          height: SizeConfig.getUniformSize(80),
+          width: SizeConfig.getUniformSize(92),
+          height: SizeConfig.getUniformSize(92),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: Colors.black,
@@ -29175,7 +29175,7 @@ class FixedSelectionBoard extends StatelessWidget {
           child: Text(
             text,
             style: TextStyle(
-              fontSize: SizeConfig.getUniformSize(40),
+              fontSize: SizeConfig.getUniformSize(48),
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -29192,7 +29192,7 @@ class FixedSelectionBoard extends StatelessWidget {
 ButtonStyle _outlinedStyle() {
   return ButtonStyle(
     side: WidgetStateProperty.all(
-        BorderSide(color: Colors.black, width: SizeConfig.getUniformSize(2.5))),
+        BorderSide(color: Colors.black, width: SizeConfig.getUniformSize(3))),
     animationDuration: Duration.zero,
     foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
       if (states.contains(WidgetState.pressed)) {
@@ -29232,7 +29232,7 @@ class AnimatedBackButtonState extends State<AnimatedBackButton>
     );
     _animation = Tween<double>(
       begin: 1.0,
-      end: 1.2,
+      end: 1.3,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
@@ -29255,7 +29255,7 @@ class AnimatedBackButtonState extends State<AnimatedBackButton>
       scale: _animation,
       child: IconButton(
         icon: Icon(Icons.arrow_back_ios_new,
-            size: SizeConfig.getUniformSize(34),
+            size: SizeConfig.getUniformSize(42),
             color: Colors.black),
         onPressed: () {
           _controller.stop();
