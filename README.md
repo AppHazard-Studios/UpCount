@@ -1,8 +1,8 @@
 # UpCount: Countdown with Friends
 
 ![UpCount App Icon](https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Homescreen-s.jpg?raw=true)  
-<img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Letters-s.jpg?raw=true" width="410" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Numbers-s.jpg?raw=true" width="410" />
-<img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum-s.jpg?raw=true" width="410" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum2-s.jpg?raw=true" width="410" />
+<img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Letters-s.jpg?raw=true" width="412" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Numbers-s.jpg?raw=true" width="412" />
+<img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum-s.jpg?raw=true" width="412" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum2-s.jpg?raw=true" width="412" />
 
 ## Overview  
 **UpCount** is designed for playing **Countdown** with friends or practicing solo. Featuring an **easy-to-read display** and **authentic Countdown-style timer sounds**, it brings the classic game to your device. Whether you're gathered around a table or playing on the go, **UpCount scales beautifully across different screen sizes**, ensuring the best possible experience.  
