@@ -33,14 +33,14 @@ class SizeConfig {
 
   static double getDeviceMultiplier(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
-    if (height >= 1000) {
-      return 0.9; // For devices with enough vertical space, no upscaling.
-    } else if (height >= 700) {
-      return 1.0;
-    } else if (height >= 400) {
-      return 1.0; // For medium screens, scale up slightly.
+    if (height >= 800) {
+      return 0.9;
+    } else if (height >= 500) {
+      return 0.95; //tablets and tvs
+    } else if (height >= 420) {
+      return 1.1; // normal phones
     } else {
-      return 1.0; // For smaller screens, scale up more.
+      return 0.95; // smaller phones
     }
   }
 
