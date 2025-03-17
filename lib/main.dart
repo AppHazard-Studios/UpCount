@@ -28,19 +28,19 @@ class SizeConfig {
   static late double scaleWidth;
   static late double scaleHeight;
   static late double uniformScale;
-  static double designWidth = 1280;
+  static double designWidth = 1000;
   static double designHeight = 720;
 
   static double getDeviceMultiplier(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
-    if (height >= 800) {
+    if (height >= 712) {
       return 0.9;
-    } else if (height >= 500) {
+    } else if (height >= 512) {
       return 0.95; //tablets and tvs
-    } else if (height >= 420) {
+    } else if (height >= 412) {
       return 1.1; // normal phones
     } else {
-      return 0.95; // smaller phones
+      return 1.00; // smaller phones
     }
   }
 
