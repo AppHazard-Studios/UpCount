@@ -17,9 +17,17 @@
 
 ## Download  
 
-[![Get it on Google Play](https://upload.wikimedia.org/wikipedia/commons/c/cd/Get_it_on_Google_Play.svg)](https://play.google.com/store/apps/details?id=com.apphazardstudios.upcount)  
+<a href="">
+    <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/assets/googleplay.png?raw=true"
+    alt="Get it on Google Play"
+    height="80">
+</a>
 
-[![Get it on F-Droid](https://upload.wikimedia.org/wikipedia/commons/3/34/F-Droid-button.png)](https://f-droid.org/packages/com.apphazardstudios.upcount)  
+<a href="">
+    <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/assets/get-it-on.png?raw=true"
+    alt="Get it on F-Droid"
+    height="80">
+</a>
 
 _(Links will be active once the app is published.)_  
 
