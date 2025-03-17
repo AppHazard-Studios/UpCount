@@ -11,6 +11,12 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+/windows/
+/linux/
+/web/
+*.afdesign
+*.flp
+
 
 # IntelliJ related
 *.iml
