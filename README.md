@@ -1,8 +1,8 @@
 # UpCount: Countdown with Friends
 
 ![UpCount App Icon](https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Homescreen.jpg?raw=true)  
-<img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Letters.jpg?raw=true" width="370" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Numbers.jpg?raw=true" width="370" />
-<img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum2.jpg?raw=true" width="370" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum%20solved.jpg?raw=true" width="370" />
+<img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Letters.jpg?raw=true" width="400" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Numbers.jpg?raw=true" width="400" />
+<img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum2.jpg?raw=true" width="400" /> <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/Screenshots/shrunk/Conundrum%20solved.jpg?raw=true" width="400" />
 
 ## Overview  
 UpCount is a game designed for **playing Countdown with friends** or practicing solo. It features an easy-to-read display, making it perfect for group play around a table, and includes the classic Countdown timer sound for an authentic experience.
