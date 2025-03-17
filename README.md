@@ -20,13 +20,13 @@
 <a href="">
     <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/assets/googleplay.png?raw=true"
     alt="Get it on Google Play"
-    height="80">
+    height="70">
 </a>
-
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="">
     <img src="https://github.com/AppHazard-Studios/UpCount/blob/main/assets/get-it-on.png?raw=true"
     alt="Get it on F-Droid"
-    height="80">
+    height="70">
 </a>
 
 _(Links will be active once the app is published.)_  
